@@ -58,9 +58,13 @@ export default function Footer() {
         </div>
 
         <div className="section-divider my-8" />
-        <p className="text-center text-xs text-cream/40">
-          &copy; {new Date().getFullYear()} KAFA Group. All rights reserved.
-        </p>
+        <div className="flex flex-col items-center gap-2 text-center text-xs text-cream/40 sm:flex-row sm:justify-between">
+          <p>&copy; {new Date().getFullYear()} KAFA Group. All rights reserved.</p>
+          <div className="flex gap-4">
+            <Link href="/terms" className="hover:text-gold">Terms of Service</Link>
+            <Link href="/privacy" className="hover:text-gold">Privacy Policy</Link>
+          </div>
+        </div>
       </div>
     </footer>
   );

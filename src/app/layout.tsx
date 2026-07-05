@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AdminToolbar from "@/components/AdminToolbar";
 import PageTransition from "@/components/PageTransition";
+import CookieBanner from "@/components/CookieBanner";
+import TawkLoader from "@/components/TawkLoader";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
@@ -60,23 +61,8 @@ export default async function RootLayout({
         <main className="pt-20"><PageTransition>{children}</PageTransition></main>
         <Footer />
         {toolbar}
-        {tawkId && (
-          <Script id="tawkto" strategy="afterInteractive">
-            {`
-              var Tawk_API = Tawk_API || {};
-              var Tawk_LoadStart = new Date();
-              (function () {
-                var s1 = document.createElement("script"),
-                  s0 = document.getElementsByTagName("script")[0];
-                s1.async = true;
-                s1.src = 'https://embed.tawk.to/${tawkId}';
-                s1.charset = "UTF-8";
-                s1.setAttribute("crossorigin", "*");
-                s0.parentNode.insertBefore(s1, s0);
-              })();
-            `}
-          </Script>
-        )}
+        <CookieBanner />
+        {tawkId && <TawkLoader tawkId={tawkId} />}
       </body>
     </html>
   );

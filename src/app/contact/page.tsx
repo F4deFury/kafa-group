@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { MapPin, Phone, Mail } from "lucide-react";
 import Reveal from "@/components/Reveal";
+import Link from "next/link";
 import { submitContactForm } from "./actions";
 
 export default function Contact() {
@@ -71,6 +72,14 @@ export default function Contact() {
 
         <Reveal delay={0.1}>
           <form action={handleSubmit} className="space-y-4 rounded-md border border-black/10 bg-navy-card p-6">
+            <input
+              type="text"
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+              className="absolute left-[-9999px] h-0 w-0 opacity-0"
+              aria-hidden="true"
+            />
             {result?.success ? (
               <p className="text-gold">{result.message}</p>
             ) : (
@@ -88,6 +97,13 @@ export default function Contact() {
                 <button type="submit" disabled={isPending} className="w-full rounded-sm bg-gold px-6 py-3 font-medium text-navy transition hover:bg-gold-light disabled:opacity-60">
                   {isPending ? "Sending..." : "Submit"}
                 </button>
+                <p className="pt-1 text-center text-sm text-cream/50">
+                  Already a client?{" "}
+                  <Link href="/sign-in" className="text-gold hover:underline">
+                    Sign in here
+                  </Link>
+                  .
+                </p>
               </>
             )}
           </form>
