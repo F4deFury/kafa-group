@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import AdminToolbar from "@/components/AdminToolbar";
 import PageTransition from "@/components/PageTransition";
 import CookieBanner from "@/components/CookieBanner";
+import { Analytics } from "@vercel/analytics/next";
 import TawkLoader from "@/components/TawkLoader";
 import { createClient } from "@/lib/supabase/server";
 
@@ -63,6 +64,7 @@ export default async function RootLayout({
         {toolbar}
         <CookieBanner />
         {tawkId && <TawkLoader tawkId={tawkId} />}
+        <Analytics />
       </body>
     </html>
   );
