@@ -2,6 +2,11 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { LayoutDashboard, FolderKanban, FileText, Mail, Users, ShieldCheck, Settings, Image as ImageIcon } from "lucide-react";
+export const metadata = {
+  title: "Admin | KAFA Group",
+  robots: { index: false, follow: false },
+};
+
 
 export default async function AdminLayout({
   children,

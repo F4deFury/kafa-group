@@ -2,6 +2,13 @@ import { ShieldCheck, Award, Users, Building } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import { createClient } from "@/lib/supabase/server";
 
+export const metadata = {
+  title: "About Us | KAFA Group",
+  description:
+    "Founded in 2012 by Steve McKenzie, KAFA Group is a Bridgeport, Connecticut construction management and general contracting firm delivering commercial, residential, and infrastructure projects.",
+};
+
+
 const stats = [
   { value: "2012", label: "Year Established" },
   { value: "200+", label: "Projects Completed" },

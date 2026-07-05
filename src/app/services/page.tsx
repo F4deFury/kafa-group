@@ -3,6 +3,13 @@ import { Building2, HardHat, Landmark, Wrench, ClipboardCheck, Hammer, ArrowRigh
 import Reveal from "@/components/Reveal";
 import { createClient } from "@/lib/supabase/server";
 
+export const metadata = {
+  title: "Services | KAFA Group",
+  description:
+    "KAFA Group offers construction management, general contracting, and pre-construction services across commercial, residential, and infrastructure sectors in Connecticut.",
+};
+
+
 const services = [
   { icon: HardHat, title: "Construction Management", desc: "Collaborative oversight from planning through closeout, with full transparency and accountability at every stage." },
   { icon: ClipboardCheck, title: "Construction Management at Risk", desc: "We assume cost and schedule risk while managing the build, protecting your budget and timeline." },

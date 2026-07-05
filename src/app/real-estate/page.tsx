@@ -2,6 +2,13 @@ import { Landmark, Building2, TramFront, Construction, Home as HomeIcon, Landmar
 import Reveal from "@/components/Reveal";
 import { createClient } from "@/lib/supabase/server";
 
+export const metadata = {
+  title: "KG Enterprise | KAFA Group Real Estate",
+  description:
+    "KG Enterprise, founded in 2005, is the real estate development arm of KAFA Group, investing in and developing properties across Connecticut.",
+};
+
+
 const services = [
   { icon: Landmark, title: "Master Planning & Development", desc: "Crafting strategic frameworks that guide sustainable urban growth and land use." },
   { icon: Building2, title: "Mixed Use Development", desc: "Combining residential, commercial, and recreational facilities within integrated developments." },

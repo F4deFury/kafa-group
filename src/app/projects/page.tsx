@@ -2,6 +2,13 @@ import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import { createClient } from "@/lib/supabase/server";
 
+export const metadata = {
+  title: "Projects | KAFA Group",
+  description:
+    "Browse KAFA Group's portfolio of completed and ongoing construction projects across commercial, residential, institutional, and infrastructure categories.",
+};
+
+
 type Project = {
   id: string;
   name: string;
