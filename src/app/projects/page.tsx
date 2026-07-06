@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
+import PageHero from "@/components/PageHero";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata = {
@@ -21,13 +22,17 @@ const categoryOrder = ["Education", "Healthcare", "Commercial Residences", "Muni
 
 export default async function Projects() {
   const supabase = await createClient();
-  const { data } = await supabase
-    .from("projects")
-    .select("id, name, location, category, category_description")
-    .eq("published", true)
-    .order("sort_order", { ascending: true });
+  const [{ data }, { data: heroMedia }] = await Promise.all([
+    supabase
+      .from("projects")
+      .select("id, name, location, category, category_description")
+      .eq("published", true)
+      .order("sort_order", { ascending: true }),
+    supabase.from("site_media").select("url").eq("key", "projects_hero").single(),
+  ]);
 
   const projects = (data ?? []) as Project[];
+  const heroImage = heroMedia?.url || "/images/projects-hero.png";
 
   const grouped = categoryOrder
     .map((category) => ({
@@ -38,11 +43,11 @@ export default async function Projects() {
     .filter((g) => g.items.length > 0);
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-20">
+    <div>
+      <PageHero image={heroImage} eyebrow="Building Excellence" title="KAFA Group’s Featured Projects" />
+      <div className="mx-auto max-w-6xl px-6 py-20">
       <Reveal>
-        <p className="mb-2 text-sm uppercase tracking-[0.3em] text-gold">Building Excellence</p>
-        <h1 className="text-4xl font-semibold sm:text-5xl">KAFA Group&rsquo;s Featured Projects</h1>
-        <p className="mt-6 max-w-2xl text-cream/70">
+        <p className="max-w-2xl text-cream/70">
           With a track record of excellence and a commitment to community
           impact, we are your trusted partner for construction projects that
           make a difference. Connect with us to discuss our full portfolio of
@@ -82,6 +87,7 @@ export default async function Projects() {
           Project photography coming soon.
         </p>
       </Reveal>
+      </div>
     </div>
   );
 }

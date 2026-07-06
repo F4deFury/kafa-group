@@ -1,5 +1,6 @@
 import { ShieldCheck, Award, Users, Building } from "lucide-react";
 import Reveal from "@/components/Reveal";
+import PageHero from "@/components/PageHero";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata = {
@@ -28,29 +29,19 @@ export default async function About() {
     supabase.from("site_content").select("value").eq("key", "about_story").single(),
     supabase.from("site_media").select("url").eq("key", "about_photo").single(),
   ]);
+  const heroImage = photo?.url || "/images/about-hero.png";
 
   const story =
     data?.value ||
     "Founded in 2012 by Steve McKenzie, KAFA Group was created from a profound passion for revitalizing the communities we call home. As a premier construction management and general contracting firm based in Bridgeport, Connecticut, we bring over 30 years of combined experience in architecture and urban planning to every project. Our diverse team, rich in local expertise, is dedicated to transforming visions into reality.";
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-20">
-      <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
-        <Reveal>
-          <p className="mb-2 text-sm uppercase tracking-[0.3em] text-gold">Our Story</p>
-          <h1 className="text-4xl font-semibold sm:text-5xl">Who We Are</h1>
-          <p className="mt-6 max-w-2xl text-cream/70">{story}</p>
-        </Reveal>
-        <Reveal delay={0.1}>
-          {photo?.url ? (
-            <img src={photo.url} alt="KAFA Group team" className="aspect-[4/3] w-full rounded-md object-cover" />
-          ) : (
-            <div className="flex aspect-[4/3] w-full items-center justify-center rounded-md bg-gradient-to-br from-gray-100 to-gray-200 text-sm text-cream/40">
-              Photo coming soon
-            </div>
-          )}
-        </Reveal>
-      </div>
+    <div>
+      <PageHero image={heroImage} eyebrow="Our Story" title="Who We Are" />
+      <div className="mx-auto max-w-5xl px-6 py-20">
+      <Reveal>
+        <p className="max-w-2xl text-cream/70">{story}</p>
+      </Reveal>
 
       <div className="section-divider my-14" />
 
@@ -94,6 +85,7 @@ export default async function About() {
             </div>
           </Reveal>
         ))}
+      </div>
       </div>
     </div>
   );

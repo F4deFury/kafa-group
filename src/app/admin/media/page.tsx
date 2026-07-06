@@ -52,22 +52,28 @@ export default async function AdminMedia() {
       <h2 className="mb-3 mt-10 text-lg font-medium">Page Photos</h2>
       <div className="grid gap-6 sm:grid-cols-2">
         <MediaUploadCard
-          label="About Page Photo"
+          label="About Page Banner"
           fieldKey="about_photo"
           mediaType="image"
           currentUrl={map.about_photo?.url ?? null}
         />
         <MediaUploadCard
-          label="KG Real Estate Photo"
+          label="KG Real Estate Banner"
           fieldKey="real_estate_photo"
           mediaType="image"
           currentUrl={map.real_estate_photo?.url ?? null}
         />
         <MediaUploadCard
-          label="Services Page Photo"
+          label="Services Page Banner"
           fieldKey="services_photo"
           mediaType="image"
           currentUrl={map.services_photo?.url ?? null}
+        />
+        <MediaUploadCard
+          label="Projects Page Banner"
+          fieldKey="projects_hero"
+          mediaType="image"
+          currentUrl={map.projects_hero?.url ?? null}
         />
       </div>
 

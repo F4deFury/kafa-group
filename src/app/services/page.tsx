@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Building2, HardHat, Landmark, Wrench, ClipboardCheck, Hammer, ArrowRight } from "lucide-react";
 import Reveal from "@/components/Reveal";
+import PageHero from "@/components/PageHero";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata = {
@@ -22,31 +23,19 @@ const services = [
 export default async function Services() {
   const supabase = await createClient();
   const { data: photo } = await supabase.from("site_media").select("url").eq("key", "services_photo").single();
+  const heroImage = photo?.url || "/images/services-hero.png";
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-20">
-      <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
-        <Reveal>
-          <p className="mb-2 text-sm uppercase tracking-[0.3em] text-gold">What We Do</p>
-          <h1 className="text-4xl font-semibold sm:text-5xl">
-            Comprehensive Construction Services
-          </h1>
-          <p className="mt-6 max-w-2xl text-cream/70">
-            Our comprehensive suite of services ensures your project is managed
-            with expertise at every stage, from planning and execution to
-            closeout &mdash; so we can build a better future, together.
-          </p>
-        </Reveal>
-        <Reveal delay={0.1}>
-          {photo?.url ? (
-            <img src={photo.url} alt="KAFA Group construction services" className="aspect-[4/3] w-full rounded-md object-cover" />
-          ) : (
-            <div className="flex aspect-[4/3] w-full items-center justify-center rounded-md bg-gradient-to-br from-gray-100 to-gray-200 text-sm text-cream/40">
-              Photo coming soon
-            </div>
-          )}
-        </Reveal>
-      </div>
+    <div>
+      <PageHero image={heroImage} eyebrow="What We Do" title="Comprehensive Construction Services" />
+      <div className="mx-auto max-w-6xl px-6 py-20">
+      <Reveal>
+        <p className="max-w-2xl text-cream/70">
+          Our comprehensive suite of services ensures your project is managed
+          with expertise at every stage, from planning and execution to
+          closeout &mdash; so we can build a better future, together.
+        </p>
+      </Reveal>
 
       <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {services.map((s, i) => (
@@ -69,6 +58,7 @@ export default async function Services() {
           </Link>
         </div>
       </Reveal>
+      </div>
     </div>
   );
 }
