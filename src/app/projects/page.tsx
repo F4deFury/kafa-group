@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import PageHero from "@/components/PageHero";
+import CategoryGallery from "./CategoryGallery";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata = {
@@ -20,26 +21,49 @@ type Project = {
 
 const categoryOrder = ["Education", "Healthcare", "Commercial Residences", "Municipalities"];
 
+const categoryCoverKeys: Record<string, string> = {
+  Education: "category_education_cover",
+  Healthcare: "category_healthcare_cover",
+  "Commercial Residences": "category_commercial_residences_cover",
+  Municipalities: "category_municipalities_cover",
+};
+
 export default async function Projects() {
   const supabase = await createClient();
-  const [{ data }, { data: heroMedia }] = await Promise.all([
+  const [{ data }, { data: heroMedia }, { data: media }] = await Promise.all([
     supabase
       .from("projects")
       .select("id, name, location, category, category_description")
       .eq("published", true)
       .order("sort_order", { ascending: true }),
     supabase.from("site_media").select("url").eq("key", "projects_hero").single(),
+    supabase.from("site_media").select("key, url"),
   ]);
 
   const projects = (data ?? []) as Project[];
   const heroImage = heroMedia?.url || "/images/projects-hero.png";
+  const mediaMap = Object.fromEntries((media ?? []).map((m) => [m.key, m.url]));
+
+  const projectIds = projects.map((p) => p.id);
+  const { data: images } = projectIds.length
+    ? await supabase.from("project_images").select("project_id, url").in("project_id", projectIds)
+    : { data: [] as { project_id: string; url: string }[] };
 
   const grouped = categoryOrder
-    .map((category) => ({
-      category,
-      description: projects.find((p) => p.category === category)?.category_description ?? "",
-      items: projects.filter((p) => p.category === category),
-    }))
+    .map((category) => {
+      const items = projects.filter((p) => p.category === category);
+      const idsInCategory = new Set(items.map((p) => p.id));
+      const photos = (images ?? [])
+        .filter((img) => idsInCategory.has(img.project_id))
+        .map((img) => img.url);
+      return {
+        category,
+        description: items.find((p) => p.category_description)?.category_description ?? "",
+        items,
+        photos,
+        coverUrl: mediaMap[categoryCoverKeys[category]] ?? null,
+      };
+    })
     .filter((g) => g.items.length > 0);
 
   return (
@@ -55,15 +79,21 @@ export default async function Projects() {
         </p>
       </Reveal>
 
-      <div className="mt-14 space-y-16">
+      <div className="mt-14 space-y-20">
         {grouped.map((group, gi) => (
           <div key={group.category}>
             <Reveal delay={gi * 0.05}>
-              <h2 className="text-2xl font-semibold text-gold">{group.category}</h2>
-              <p className="mt-3 max-w-3xl text-sm text-cream/70">{group.description}</p>
+              <CategoryGallery
+                category={group.category}
+                description={group.description}
+                coverUrl={group.coverUrl}
+                photos={group.photos}
+                projectCount={group.items.length}
+                reverse={gi % 2 === 1}
+              />
             </Reveal>
 
-            <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {group.items.map((p, i) => (
                 <Reveal key={p.id} delay={i * 0.08}>
                   <Link

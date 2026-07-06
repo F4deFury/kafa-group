@@ -77,6 +77,39 @@ export default async function AdminMedia() {
         />
       </div>
 
+      <h2 className="mb-3 mt-10 text-lg font-medium">Project Category Cover Photos</h2>
+      <p className="mb-4 text-sm text-cream/60">
+        Shown on the Projects page for each category. If a category has
+        uploaded project photos too, hovering will cycle through them
+        automatically.
+      </p>
+      <div className="grid gap-6 sm:grid-cols-2">
+        <MediaUploadCard
+          label="Education Cover"
+          fieldKey="category_education_cover"
+          mediaType="image"
+          currentUrl={map.category_education_cover?.url ?? null}
+        />
+        <MediaUploadCard
+          label="Healthcare Cover"
+          fieldKey="category_healthcare_cover"
+          mediaType="image"
+          currentUrl={map.category_healthcare_cover?.url ?? null}
+        />
+        <MediaUploadCard
+          label="Commercial Residences Cover"
+          fieldKey="category_commercial_residences_cover"
+          mediaType="image"
+          currentUrl={map.category_commercial_residences_cover?.url ?? null}
+        />
+        <MediaUploadCard
+          label="Municipalities Cover"
+          fieldKey="category_municipalities_cover"
+          mediaType="image"
+          currentUrl={map.category_municipalities_cover?.url ?? null}
+        />
+      </div>
+
       <p className="mt-8 text-sm text-cream/50">
         To upload photos for a specific project&rsquo;s gallery, go to{" "}
         <a href="/admin/projects" className="text-gold hover:text-gold-light">Projects</a>{" "}
