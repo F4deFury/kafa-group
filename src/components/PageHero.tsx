@@ -10,16 +10,20 @@ export default function PageHero({
   title: string;
 }) {
   return (
-    <div className="relative h-[420px] w-full overflow-hidden sm:h-[480px]">
+    <div
+      className="relative w-full overflow-hidden"
+      style={{ height: 420, maxHeight: 420 }}
+    >
       <img
         src={image}
         alt=""
-        className="absolute inset-0 h-full w-full object-cover"
+        className="absolute inset-0"
+        style={{ height: "100%", width: "100%", objectFit: "cover" }}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-navy/10 to-transparent" />
       <div className="relative mx-auto flex h-full max-w-6xl items-center px-6">
         <Reveal>
-          <div className="max-w-xl rounded-md bg-white/90 px-8 py-10 shadow-lg backdrop-blur-sm">
+          <div className="max-w-xl rounded-md bg-white/60 px-8 py-10 shadow-lg backdrop-blur-md">
             <p className="mb-2 text-sm uppercase tracking-[0.3em] text-gold-light">
               {eyebrow}
             </p>
