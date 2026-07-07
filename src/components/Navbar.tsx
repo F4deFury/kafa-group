@@ -67,19 +67,19 @@ export default function Navbar({ auth }: { auth: AuthInfo }) {
                 onMouseLeave={() => setMenuOpen(false)}
               >
                 <button className="flex items-center gap-1 text-sm text-white/80 hover:text-gold">
-                  Dashboards
+                  Dashboard
                   <ChevronDown className="h-3.5 w-3.5" />
                 </button>
                 {menuOpen && (
                   <div className="absolute right-0 top-full w-56 rounded-md border border-black/10 bg-white py-2 text-navy shadow-lg">
                     <p className="px-4 pb-1 pt-1 text-[10px] font-semibold uppercase tracking-wider text-navy/40">
-                      Dashboards
+                      Dashboard
                     </p>
                     <Link href="/admin" className="block px-4 py-2 text-sm hover:bg-navy-light hover:text-gold">
                       Admin Dashboard
                     </Link>
                     {auth.role === "management" && (
-                      <Link href="/admin/team" className="block px-4 py-2 text-sm hover:bg-navy-light hover:text-gold">
+                      <Link href="/admin/management" className="block px-4 py-2 text-sm hover:bg-navy-light hover:text-gold">
                         Management Dashboard
                       </Link>
                     )}

@@ -8,6 +8,7 @@ import {
   ClipboardCheck,
   Hammer,
 } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import HeroRotator from "@/components/HeroRotator";
 import { createClient } from "@/lib/supabase/server";
@@ -67,9 +68,16 @@ export default async function Home() {
   return (
     <div>
       {/* Hero with background video */}
-      <section className="relative -mt-20 flex min-h-[90vh] items-center overflow-hidden">
+      <section className="relative -mt-20 flex min-h-screen items-center overflow-hidden">
         <HeroRotator slides={slides} />
-        <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/80 to-navy/50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white via-navy/70 to-navy/40" />
+        <a
+          href="#stats"
+          aria-label="Scroll down"
+          className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 animate-bounce text-white/80 hover:text-gold"
+        >
+          <ChevronDown className="h-8 w-8" />
+        </a>
         <div className="relative mx-auto max-w-7xl px-6 py-24">
           <Reveal>
             <p className="mb-4 text-sm uppercase tracking-[0.3em] text-gold">
@@ -98,8 +106,9 @@ export default async function Home() {
       </section>
 
       {/* Stats */}
-      <section className="border-b border-black/10 bg-navy-light">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-6 py-14 sm:grid-cols-4">
+      <section id="stats" className="relative z-10 -mt-24 border-b border-black/10">
+        <div className="mx-auto max-w-7xl rounded-t-3xl border border-black/10 bg-white/70 px-6 backdrop-blur-sm">
+        <div className="grid grid-cols-2 gap-8 py-14 sm:grid-cols-4">
           {stats.map((s, i) => (
             <Reveal key={s.label} delay={i * 0.1}>
               <div className="text-center">
@@ -108,6 +117,7 @@ export default async function Home() {
               </div>
             </Reveal>
           ))}
+        </div>
         </div>
       </section>
 

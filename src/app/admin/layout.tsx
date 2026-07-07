@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { LayoutDashboard, FolderKanban, FileText, Mail, Users, ShieldCheck, Settings, Image as ImageIcon } from "lucide-react";
+import { LayoutDashboard, FolderKanban, FileText, Mail, Users, ShieldCheck, Settings, Image as ImageIcon, BarChart3 } from "lucide-react";
 export const metadata = {
   title: "Admin | KAFA Group",
   robots: { index: false, follow: false },
@@ -37,6 +37,7 @@ export default async function AdminLayout({
 
   const navItems = [
     { href: "/admin", label: "Overview", icon: LayoutDashboard, show: true },
+    { href: "/admin/management", label: "Management Overview", icon: BarChart3, show: isManagement },
     { href: "/admin/projects", label: "Projects", icon: FolderKanban, show: perms.projects },
     { href: "/admin/content", label: "Site Content", icon: FileText, show: perms.content },
     { href: "/admin/media", label: "Site Media", icon: ImageIcon, show: perms.content },
