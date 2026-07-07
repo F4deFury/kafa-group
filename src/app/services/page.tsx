@@ -28,7 +28,7 @@ export default async function Services() {
   return (
     <div>
       <PageHero image={heroImage} eyebrow="What We Do" title="Comprehensive Construction Services" />
-      <div className="relative z-10 -mt-24 mx-auto max-w-6xl rounded-t-3xl bg-white/70 px-6 pb-20 pt-16 backdrop-blur-sm">
+      <div className="relative z-10 -mt-24 mx-auto max-w-6xl rounded-t-3xl border border-black/10 bg-white/70 px-6 pb-20 pt-16 backdrop-blur-sm">
       <Reveal>
         <p className="max-w-2xl text-cream/70">
           Our comprehensive suite of services ensures your project is managed

@@ -17,6 +17,9 @@ export default async function AdminTeam() {
     .in("role", ["staff", "management"])
     .order("role");
 
+  const management = (team ?? []).filter((p) => p.role === "management");
+  const staff = (team ?? []).filter((p) => p.role === "staff");
+
   return (
     <div>
       <h1 className="text-2xl font-semibold">Team & Permissions</h1>
@@ -31,10 +34,26 @@ export default async function AdminTeam() {
 
       <div className="section-divider my-8" />
 
+      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-cream/50">
+        Management
+      </h2>
+      <div className="mb-8 space-y-4">
+        {management.length === 0 ? (
+          <p className="text-sm text-cream/50">No management accounts.</p>
+        ) : (
+          management.map((p) => <StaffRow key={p.id} profile={p} />)
+        )}
+      </div>
+
+      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-cream/50">
+        Staff / Administration
+      </h2>
       <div className="space-y-4">
-        {(team ?? []).map((p) => (
-          <StaffRow key={p.id} profile={p} />
-        ))}
+        {staff.length === 0 ? (
+          <p className="text-sm text-cream/50">No staff accounts yet.</p>
+        ) : (
+          staff.map((p) => <StaffRow key={p.id} profile={p} />)
+        )}
       </div>
     </div>
   );
