@@ -3,9 +3,23 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, Menu, X } from "lucide-react";
+import { ChevronLeft, Menu, X, LayoutDashboard, FolderKanban, FileText, Mail, Users, ShieldCheck, Settings, Image as ImageIcon, BarChart3 } from "lucide-react";
 
-type NavItem = { href: string; label: string; icon: React.ComponentType<{ className?: string }> };
+const ICONS = {
+  LayoutDashboard,
+  FolderKanban,
+  FileText,
+  Mail,
+  Users,
+  ShieldCheck,
+  Settings,
+  ImageIcon,
+  BarChart3,
+} as const;
+
+export type IconKey = keyof typeof ICONS;
+
+type NavItem = { href: string; label: string; icon: IconKey };
 
 export default function AdminChrome({
   isManagement,
@@ -76,7 +90,7 @@ export default function AdminChrome({
                   pathname === item.href ? "bg-navy-light text-gold" : "text-cream/80 hover:bg-navy-light hover:text-gold"
                 }`}
               >
-                <item.icon className="h-4 w-4" />
+                {(() => { const Icon = ICONS[item.icon]; return <Icon className="h-4 w-4" />; })()}
                 {item.label}
               </Link>
             ))}
@@ -99,7 +113,7 @@ export default function AdminChrome({
                   pathname === item.href ? "bg-navy-light text-gold" : "text-cream/80 hover:bg-navy-light hover:text-gold"
                 }`}
               >
-                <item.icon className="h-4 w-4" />
+                {(() => { const Icon = ICONS[item.icon]; return <Icon className="h-4 w-4" />; })()}
                 {item.label}
               </Link>
             ))}
