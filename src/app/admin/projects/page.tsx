@@ -5,10 +5,10 @@ import { Trash2 } from "lucide-react";
 
 export default async function AdminProjects() {
   const supabase = await requirePermission("projects");
-  const { data: projects } = await supabase
-    .from("projects")
-    .select("*")
-    .order("sort_order", { ascending: true });
+  const [{ data: projects }, { data: clients }] = await Promise.all([
+    supabase.from("projects").select("*").order("sort_order", { ascending: true }),
+    supabase.from("profiles").select("id, full_name, company").eq("role", "client").order("full_name"),
+  ]);
 
   return (
     <div>
@@ -47,6 +47,21 @@ export default async function AdminProjects() {
             <label className="flex items-center gap-2 text-sm text-cream/70">
               <input type="checkbox" name="published" defaultChecked={p.published} />
               Published on public site
+            </label>
+            <label className="flex flex-col gap-1 text-sm text-cream/70 sm:col-span-2">
+              Assigned Client
+              <select
+                name="client_id"
+                defaultValue={p.client_id ?? ""}
+                className="rounded-sm border border-black/15 bg-navy-light px-3 py-2 text-sm text-cream focus:border-gold focus:outline-none"
+              >
+                <option value="">— No client assigned —</option>
+                {(clients ?? []).map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.full_name || "Unnamed"} {c.company ? `(${c.company})` : ""}
+                  </option>
+                ))}
+              </select>
             </label>
             <div className="flex gap-2">
               <button

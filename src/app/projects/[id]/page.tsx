@@ -12,11 +12,14 @@ export default async function ProjectDetail({
   const { id } = await params;
   const supabase = await createClient();
 
+  // RLS already restricts this to: published projects (anyone), or the
+  // client's own assigned project, or staff/management. No extra filter
+  // needed here beyond the id lookup — adding .eq("published", true) would
+  // incorrectly 404 a client viewing their own unpublished/in-progress project.
   const { data: project } = await supabase
     .from("projects")
     .select("id, name, location, category, category_description")
     .eq("id", id)
-    .eq("published", true)
     .single();
 
   if (!project) notFound();

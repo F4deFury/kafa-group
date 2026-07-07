@@ -7,11 +7,14 @@ export async function upsertProject(formData: FormData) {
   const supabase = await createClient();
   const id = formData.get("id") as string;
 
+  const clientId = formData.get("client_id") as string;
+
   const payload = {
     name: formData.get("name") as string,
     location: formData.get("location") as string,
     description: formData.get("description") as string,
     published: formData.get("published") === "on",
+    client_id: clientId || null,
   };
 
   if (id) {
@@ -22,6 +25,7 @@ export async function upsertProject(formData: FormData) {
 
   revalidatePath("/admin/projects");
   revalidatePath("/projects");
+  revalidatePath("/dashboard");
 }
 
 export async function deleteProject(formData: FormData) {

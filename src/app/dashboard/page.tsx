@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { FolderKanban, FileText, MessageSquare } from "lucide-react";
+import { FolderKanban, FileText, MessageSquare, MapPin, ArrowRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import SignOutButton from "./SignOutButton";
 
@@ -12,14 +12,18 @@ export default async function Dashboard() {
     redirect("/sign-in");
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("full_name, company")
-    .eq("id", user.id)
-    .single();
+  const [{ data: profile }, { data: myProjects }] = await Promise.all([
+    supabase.from("profiles").select("full_name, company").eq("id", user.id).single(),
+    supabase
+      .from("projects")
+      .select("id, name, location, category, description")
+      .eq("client_id", user.id),
+  ]);
+
+  const projects = myProjects ?? [];
 
   const stats = [
-    { label: "Active Projects", value: 0, icon: FolderKanban },
+    { label: "Active Projects", value: projects.length, icon: FolderKanban },
     { label: "Documents", value: 0, icon: FileText },
     { label: "Messages", value: 0, icon: MessageSquare },
   ];
@@ -79,10 +83,43 @@ export default async function Dashboard() {
           ))}
         </div>
 
-        <div className="mt-10 rounded-md border border-black/10 bg-navy-card p-8 text-center text-cream/60">
-          Project tracking, documents, invoices, and messaging will appear
-          here once your first project is assigned to your account.
-        </div>
+        {projects.length > 0 ? (
+          <div className="mt-10">
+            <h2 className="mb-4 text-lg font-medium">Your Projects</h2>
+            <div className="space-y-4">
+              {projects.map((p) => (
+                <Link
+                  key={p.id}
+                  href={`/projects/${p.id}`}
+                  className="flex items-center justify-between rounded-md border border-black/10 bg-navy-card p-5 transition hover:border-gold/50"
+                >
+                  <div>
+                    <p className="font-medium">{p.name}</p>
+                    {p.location && (
+                      <p className="mt-1 flex items-center gap-1 text-sm text-cream/60">
+                        <MapPin className="h-3.5 w-3.5" /> {p.location}
+                      </p>
+                    )}
+                    {p.category && (
+                      <p className="mt-1 text-xs uppercase tracking-wide text-gold">{p.category}</p>
+                    )}
+                  </div>
+                  <ArrowRight className="h-5 w-5 text-cream/40" />
+                </Link>
+              ))}
+            </div>
+            <p className="mt-6 text-sm text-cream/50">
+              Document uploads and project messaging are coming in a future
+              update — for now, reach out to your KAFA Group contact directly
+              for documents or questions.
+            </p>
+          </div>
+        ) : (
+          <div className="mt-10 rounded-md border border-black/10 bg-navy-card p-8 text-center text-cream/60">
+            Project tracking, documents, invoices, and messaging will appear
+            here once your first project is assigned to your account.
+          </div>
+        )}
       </div>
     </div>
   );
