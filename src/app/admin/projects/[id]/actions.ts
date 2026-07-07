@@ -86,3 +86,90 @@ export async function deleteProjectDocument(formData: FormData) {
   revalidatePath(`/admin/projects/${projectId}`);
   revalidatePath("/dashboard");
 }
+
+export async function addMilestone(formData: FormData) {
+  const supabase = await requirePermission("projects");
+  const projectId = formData.get("project_id") as string;
+  const name = (formData.get("name") as string)?.trim();
+  if (!name) return;
+
+  const { count } = await supabase
+    .from("project_milestones")
+    .select("*", { count: "exact", head: true })
+    .eq("project_id", projectId);
+
+  await supabase.from("project_milestones").insert({
+    project_id: projectId,
+    name,
+    sort_order: count ?? 0,
+  });
+
+  revalidatePath(`/admin/projects/${projectId}`);
+  revalidatePath("/dashboard");
+}
+
+export async function updateMilestoneStatus(formData: FormData) {
+  const supabase = await requirePermission("projects");
+  const projectId = formData.get("project_id") as string;
+  const milestoneId = formData.get("milestone_id") as string;
+  const status = formData.get("status") as string;
+
+  await supabase
+    .from("project_milestones")
+    .update({
+      status,
+      completed_at: status === "completed" ? new Date().toISOString() : null,
+    })
+    .eq("id", milestoneId);
+
+  revalidatePath(`/admin/projects/${projectId}`);
+  revalidatePath("/dashboard");
+}
+
+export async function deleteMilestone(formData: FormData) {
+  const supabase = await requirePermission("projects");
+  const projectId = formData.get("project_id") as string;
+  const milestoneId = formData.get("milestone_id") as string;
+
+  await supabase.from("project_milestones").delete().eq("id", milestoneId);
+
+  revalidatePath(`/admin/projects/${projectId}`);
+  revalidatePath("/dashboard");
+}
+
+export async function postProjectUpdate(formData: FormData) {
+  const supabase = await requirePermission("projects");
+  const projectId = formData.get("project_id") as string;
+  const note = (formData.get("note") as string)?.trim();
+  const notifyClient = formData.get("notify_client") === "on";
+  if (!note) return;
+
+  const { data: { user } } = await supabase.auth.getUser();
+
+  await supabase.from("project_updates").insert({
+    project_id: projectId,
+    note,
+    notify_client: notifyClient,
+    created_by: user?.id ?? null,
+  });
+
+  if (notifyClient) {
+    const { data: project } = await supabase
+      .from("projects")
+      .select("client_id, name")
+      .eq("id", projectId)
+      .single();
+
+    if (project?.client_id) {
+      await supabase.from("notifications").insert({
+        user_id: project.client_id,
+        title: `Update on ${project.name}`,
+        body: note,
+        link: `/dashboard`,
+      });
+    }
+  }
+
+  revalidatePath(`/admin/projects/${projectId}`);
+  revalidatePath("/dashboard");
+}

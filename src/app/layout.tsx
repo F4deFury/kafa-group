@@ -27,19 +27,33 @@ export default async function RootLayout({
   const { data: { user } } = await supabase.auth.getUser();
 
   let toolbar = null;
+  let notifications: {
+    id: string;
+    title: string;
+    body: string | null;
+    link: string | null;
+    read: boolean;
+    created_at: string;
+  }[] = [];
   let navAuth: {
     signedIn: boolean;
     destination: string;
     destinationLabel: string;
     role: "client" | "staff" | "management" | null;
-  } = { signedIn: false, destination: "/sign-in", destinationLabel: "Client Sign In", role: null };
+    notifications: typeof notifications;
+  } = { signedIn: false, destination: "/sign-in", destinationLabel: "Client Sign In", role: null, notifications: [] };
 
   if (user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role, permissions")
-      .eq("id", user.id)
-      .single();
+    const [{ data: profile }, { data: notifRows }] = await Promise.all([
+      supabase.from("profiles").select("role, permissions").eq("id", user.id).single(),
+      supabase
+        .from("notifications")
+        .select("id, title, body, link, read, created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(20),
+    ]);
+    notifications = notifRows ?? [];
 
     if (profile) {
       const isStaffOrManagement = ["staff", "management"].includes(profile.role);
@@ -48,6 +62,7 @@ export default async function RootLayout({
         destination: isStaffOrManagement ? "/admin" : "/dashboard",
         destinationLabel: isStaffOrManagement ? "Admin Dashboard" : "Client Dashboard",
         role: profile.role,
+        notifications,
       };
 
       if (isStaffOrManagement) {

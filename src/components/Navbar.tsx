@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Menu, X, Building2, ChevronDown } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import NotificationBell, { NotificationItem } from "@/components/NotificationBell";
 
 const links = [
   { href: "/", label: "Home" },
@@ -20,6 +21,7 @@ type AuthInfo = {
   destination: string;
   destinationLabel: string;
   role: "client" | "staff" | "management" | null;
+  notifications: NotificationItem[];
 };
 
 export default function Navbar({ auth }: { auth: AuthInfo }) {
@@ -59,6 +61,7 @@ export default function Navbar({ auth }: { auth: AuthInfo }) {
         </div>
 
         <div className="hidden items-center gap-4 md:flex">
+          {auth.signedIn && <NotificationBell notifications={auth.notifications} />}
           {auth.signedIn ? (
             isStaffOrManagement ? (
               <div

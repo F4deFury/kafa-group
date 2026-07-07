@@ -3,6 +3,8 @@ import { ArrowLeft, Trash2 } from "lucide-react";
 import { requirePermission } from "@/lib/admin-guard";
 import UploadPhotoForm from "./UploadPhotoForm";
 import UploadDocumentForm from "./UploadDocumentForm";
+import MilestoneManager from "./MilestoneManager";
+import PostUpdateForm from "./PostUpdateForm";
 import { deleteProjectImage, deleteProjectDocument } from "./actions";
 
 export default async function AdminProjectPhotos({
@@ -15,21 +17,33 @@ export default async function AdminProjectPhotos({
 
   const { data: project } = await supabase
     .from("projects")
-    .select("id, name")
+    .select("id, name, client_id")
     .eq("id", id)
     .single();
 
-  const { data: images } = await supabase
-    .from("project_images")
-    .select("id, url")
-    .eq("project_id", id)
-    .order("sort_order", { ascending: true });
-
-  const { data: documents } = await supabase
-    .from("project_documents")
-    .select("id, name, storage_path, created_at")
-    .eq("project_id", id)
-    .order("created_at", { ascending: false });
+  const [{ data: images }, { data: documents }, { data: milestones }, { data: updates }] = await Promise.all([
+    supabase
+      .from("project_images")
+      .select("id, url")
+      .eq("project_id", id)
+      .order("sort_order", { ascending: true }),
+    supabase
+      .from("project_documents")
+      .select("id, name, storage_path, created_at")
+      .eq("project_id", id)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("project_milestones")
+      .select("id, name, status, sort_order")
+      .eq("project_id", id)
+      .order("sort_order", { ascending: true }),
+    supabase
+      .from("project_updates")
+      .select("id, note, notify_client, created_at")
+      .eq("project_id", id)
+      .order("created_at", { ascending: false })
+      .limit(10),
+  ]);
 
   return (
     <div>
@@ -56,6 +70,38 @@ export default async function AdminProjectPhotos({
                 <Trash2 className="h-4 w-4" />
               </button>
             </form>
+          </div>
+        ))}
+      </div>
+
+      <div className="section-divider my-8" />
+
+      <h2 className="mb-1 text-lg font-medium">Progress &amp; Milestones</h2>
+      <p className="mb-4 text-sm text-cream/60">
+        {project?.client_id
+          ? "The client sees these milestones as a progress stepper on their dashboard."
+          : "Assign a client to this project (on the Portfolio Projects page) for these to appear on a dashboard."}
+      </p>
+      <MilestoneManager
+        projectId={id}
+        milestones={(milestones ?? []) as { id: string; name: string; status: "not_started" | "in_progress" | "completed"; sort_order: number }[]}
+      />
+
+      <div className="section-divider my-8" />
+
+      <h2 className="mb-1 text-lg font-medium">Post an Update</h2>
+      <p className="mb-4 text-sm text-cream/60">
+        Shows up in the client&rsquo;s recent activity feed, and optionally sends them a notification.
+      </p>
+      <PostUpdateForm projectId={id} />
+      <div className="mt-4 space-y-2">
+        {(updates ?? []).map((u) => (
+          <div key={u.id} className="rounded-md border border-black/10 bg-navy-card p-3">
+            <p className="text-sm">{u.note}</p>
+            <p className="mt-1 text-xs text-cream/40">
+              {new Date(u.created_at).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
+              {u.notify_client && <span className="ml-2 text-gold-light">· client notified</span>}
+            </p>
           </div>
         ))}
       </div>

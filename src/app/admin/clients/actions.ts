@@ -47,3 +47,39 @@ export async function inviteClient(formData: FormData) {
   revalidatePath("/admin/clients");
   return { success: true, message: `Invite sent to ${email}.` };
 }
+
+export async function removeClientAccount(formData: FormData) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { success: false, message: "Not signed in." };
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role, permissions")
+    .eq("id", user.id)
+    .single();
+
+  const isAuthorized =
+    profile?.role === "management" ||
+    (profile?.role === "staff" && (profile.permissions as Record<string, boolean>)?.clients);
+
+  if (!isAuthorized) {
+    return { success: false, message: "Not authorized." };
+  }
+
+  const clientId = formData.get("client_id") as string;
+  if (!clientId) return { success: false, message: "Missing client id." };
+
+  const admin = createAdminClient();
+
+  // Unassign any projects pointed at this client first (the FK is
+  // ON DELETE SET NULL, but doing it explicitly avoids relying on that
+  // silently and keeps the intent obvious here).
+  await admin.from("projects").update({ client_id: null }).eq("client_id", clientId);
+  await admin.from("profiles").delete().eq("id", clientId);
+  await admin.auth.admin.deleteUser(clientId);
+
+  revalidatePath("/admin/clients");
+  revalidatePath("/admin/management");
+  return { success: true, message: "Client access removed." };
+}
