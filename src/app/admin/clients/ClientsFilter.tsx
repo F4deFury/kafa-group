@@ -66,10 +66,10 @@ export default function ClientsFilter({ clients }: { clients: ClientRow[] }) {
               className="rounded-md border border-black/10 bg-navy-card p-4"
             >
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">{c.name}</p>
+                <Link href={`/admin/clients/${c.id}`} className="group">
+                  <p className="font-medium group-hover:text-gold">{c.name}</p>
                   <p className="text-sm text-cream/60">{c.company || "—"}</p>
-                </div>
+                </Link>
                 <div className="text-right">
                   <span
                     className={`rounded-sm px-2 py-1 text-xs uppercase tracking-wide ${
@@ -91,7 +91,7 @@ export default function ClientsFilter({ clients }: { clients: ClientRow[] }) {
 
               {c.project ? (
                 <Link
-                  href={`/admin/projects/${c.project.id}`}
+                  href={`/admin/clients/${c.id}`}
                   className="mt-3 block rounded-sm border border-black/10 bg-navy-light p-3 transition hover:border-gold/50"
                 >
                   <div className="mb-1.5 flex items-center justify-between text-xs">

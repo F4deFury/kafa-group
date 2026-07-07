@@ -83,3 +83,75 @@ export async function removeClientAccount(formData: FormData) {
   revalidatePath("/admin/management");
   return { success: true, message: "Client access removed." };
 }
+
+export async function assignClientProject(formData: FormData) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { success: false, message: "Not signed in." };
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role, permissions")
+    .eq("id", user.id)
+    .single();
+
+  const isAuthorized =
+    profile?.role === "management" ||
+    (profile?.role === "staff" && (profile.permissions as Record<string, boolean>)?.clients);
+
+  if (!isAuthorized) {
+    return { success: false, message: "Not authorized." };
+  }
+
+  const clientId = formData.get("client_id") as string;
+  const projectId = formData.get("project_id") as string;
+
+  if (!projectId) return { success: false, message: "Select a project first." };
+
+  const { error } = await supabase
+    .from("projects")
+    .update({ client_id: clientId })
+    .eq("id", projectId);
+
+  if (error) return { success: false, message: error.message };
+
+  revalidatePath(`/admin/clients/${clientId}`);
+  revalidatePath("/admin/clients");
+  revalidatePath("/dashboard");
+  return { success: true, message: "Project assigned." };
+}
+
+export async function unassignClientProject(formData: FormData) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { success: false, message: "Not signed in." };
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role, permissions")
+    .eq("id", user.id)
+    .single();
+
+  const isAuthorized =
+    profile?.role === "management" ||
+    (profile?.role === "staff" && (profile.permissions as Record<string, boolean>)?.clients);
+
+  if (!isAuthorized) {
+    return { success: false, message: "Not authorized." };
+  }
+
+  const clientId = formData.get("client_id") as string;
+  const projectId = formData.get("project_id") as string;
+
+  const { error } = await supabase
+    .from("projects")
+    .update({ client_id: null })
+    .eq("id", projectId);
+
+  if (error) return { success: false, message: error.message };
+
+  revalidatePath(`/admin/clients/${clientId}`);
+  revalidatePath("/admin/clients");
+  revalidatePath("/dashboard");
+  return { success: true, message: "Project unassigned." };
+}

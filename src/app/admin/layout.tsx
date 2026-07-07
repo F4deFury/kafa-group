@@ -1,12 +1,12 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { LayoutDashboard, FolderKanban, FileText, Mail, Users, ShieldCheck, Settings, Image as ImageIcon, BarChart3 } from "lucide-react";
+import AdminChrome from "./AdminChrome";
+
 export const metadata = {
   title: "Admin | KAFA Group",
   robots: { index: false, follow: false },
 };
-
 
 export default async function AdminLayout({
   children,
@@ -48,39 +48,12 @@ export default async function AdminLayout({
   ].filter((i) => i.show);
 
   return (
-    <div>
-      <div className="border-b border-forest-light/30 bg-[#0b1520] px-6 py-3">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <div className="flex items-center gap-3 font-mono text-xs tracking-widest text-white/70">
-            <span className="flex h-2 w-2 rounded-full bg-forest-light shadow-[0_0_6px_2px_rgba(46,107,80,0.6)]" />
-            KAFA GROUP &middot; CONTROL PANEL
-          </div>
-          <div className="font-mono text-xs tracking-wide text-gold-light">
-            {isManagement ? "MANAGEMENT ACCESS" : "STAFF ACCESS"}
-          </div>
-        </div>
-      </div>
-      <div className="mx-auto flex max-w-7xl gap-8 px-6 py-12">
-      <aside className="w-56 shrink-0">
-        <p className="mb-1 text-xs uppercase tracking-[0.2em] text-gold">
-          {isManagement ? "Management" : "Staff"}
-        </p>
-        <p className="mb-6 text-sm text-cream/60">{profile.full_name || user.email}</p>
-        <nav className="flex flex-col gap-1">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="flex items-center gap-2 rounded-sm px-3 py-2 text-sm text-cream/80 transition hover:bg-navy-light hover:text-gold"
-            >
-              <item.icon className="h-4 w-4" />
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-      </aside>
-      <div className="min-w-0 flex-1">{children}</div>
-      </div>
-    </div>
+    <AdminChrome
+      isManagement={isManagement}
+      displayName={profile.full_name || user.email || ""}
+      navItems={navItems}
+    >
+      {children}
+    </AdminChrome>
   );
 }
