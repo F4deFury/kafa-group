@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { LayoutDashboard, FileText, FolderKanban, Mail, Users, ShieldCheck, ChevronDown, ChevronUp } from "lucide-react";
+import { LayoutDashboard, FileText, FolderKanban, Mail, Users, ShieldCheck, BarChart3, ChevronDown, ChevronUp } from "lucide-react";
 
 type Perms = { content: boolean; projects: boolean; inquiries: boolean; clients: boolean };
 
@@ -18,12 +18,13 @@ export default function AdminToolbar({
   const [open, setOpen] = useState(true);
 
   const links = [
-    { href: "/admin", label: "Dashboard", icon: LayoutDashboard, show: true },
+    { href: "/admin", label: "Admin Dashboard", icon: LayoutDashboard, show: true },
+    { href: "/admin/management", label: "Executive Overview", icon: BarChart3, show: isManagement },
     { href: "/admin/content", label: "Edit Content", icon: FileText, show: isManagement || permissions.content },
     { href: "/admin/projects", label: "Edit Projects", icon: FolderKanban, show: isManagement || permissions.projects },
     { href: "/admin/submissions", label: "Inquiries", icon: Mail, show: isManagement || permissions.inquiries },
     { href: "/admin/clients", label: "Clients", icon: Users, show: isManagement || permissions.clients },
-    { href: "/admin/team", label: "Team", icon: ShieldCheck, show: isManagement },
+    { href: "/admin/management/team", label: "Team", icon: ShieldCheck, show: isManagement },
   ].filter((l) => l.show);
 
   return (

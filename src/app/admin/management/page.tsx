@@ -75,7 +75,7 @@ export default async function ManagementOverview() {
 
       <div className="mt-10 grid gap-4 sm:grid-cols-2">
         <Link
-          href="/admin/team"
+          href="/admin/management/team"
           className="flex items-center justify-between rounded-md border border-black/10 bg-navy-card p-5 transition hover:border-gold/50"
         >
           <div>

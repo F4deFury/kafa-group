@@ -44,7 +44,7 @@ export async function inviteStaff(formData: FormData) {
       .eq("id", data.user.id);
   }
 
-  revalidatePath("/admin/team");
+  revalidatePath("/admin/management/team");
   return { success: true, message: `Invite sent to ${email}.` };
 }
 
@@ -63,6 +63,6 @@ export async function updateStaffAccess(formData: FormData) {
 
   await supabase.from("profiles").update({ role, permissions }).eq("id", id);
 
-  revalidatePath("/admin/team");
+  revalidatePath("/admin/management/team");
   return { success: true, message: "Updated." };
 }
