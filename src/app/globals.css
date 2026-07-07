@@ -7,6 +7,8 @@
   --color-navy-card: #ffffff;
   --color-gold: #F5C518;
   --color-gold-light: #D9A800;
+  --color-forest: #1F4D3A;
+  --color-forest-light: #2E6B50;
   --color-cream: #16283d;
   --background: #ffffff;
   --foreground: var(--color-ink);
@@ -20,6 +22,8 @@
   --color-navy-card: var(--color-navy-card);
   --color-gold: var(--color-gold);
   --color-gold-light: var(--color-gold-light);
+  --color-forest: var(--color-forest);
+  --color-forest-light: var(--color-forest-light);
   --color-cream: var(--color-cream);
   --font-sans: var(--font-sans);
 }

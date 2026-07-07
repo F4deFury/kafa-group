@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import AdminToolbar from "@/components/AdminToolbar";
 import PageTransition from "@/components/PageTransition";
 import CookieBanner from "@/components/CookieBanner";
+import AuthHashHandler from "@/components/AuthHashHandler";
 import { Analytics } from "@vercel/analytics/next";
 import TawkLoader from "@/components/TawkLoader";
 import { createClient } from "@/lib/supabase/server";
@@ -26,7 +27,12 @@ export default async function RootLayout({
   const { data: { user } } = await supabase.auth.getUser();
 
   let toolbar = null;
-  let navAuth = { signedIn: false, destination: "/sign-in", destinationLabel: "Client Sign In" };
+  let navAuth: {
+    signedIn: boolean;
+    destination: string;
+    destinationLabel: string;
+    role: "client" | "staff" | "management" | null;
+  } = { signedIn: false, destination: "/sign-in", destinationLabel: "Client Sign In", role: null };
 
   if (user) {
     const { data: profile } = await supabase
@@ -40,7 +46,8 @@ export default async function RootLayout({
       navAuth = {
         signedIn: true,
         destination: isStaffOrManagement ? "/admin" : "/dashboard",
-        destinationLabel: isStaffOrManagement ? "Admin" : "Dashboard",
+        destinationLabel: isStaffOrManagement ? "Admin Dashboard" : "Client Dashboard",
+        role: profile.role,
       };
 
       if (isStaffOrManagement) {
@@ -62,6 +69,7 @@ export default async function RootLayout({
         <main className="pt-20"><PageTransition>{children}</PageTransition></main>
         <Footer />
         {toolbar}
+        <AuthHashHandler />
         <CookieBanner />
         {tawkId && <TawkLoader tawkId={tawkId} />}
         <Analytics />

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Menu, X, Building2 } from "lucide-react";
+import { Menu, X, Building2, ChevronDown } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 const links = [
@@ -19,11 +19,14 @@ type AuthInfo = {
   signedIn: boolean;
   destination: string;
   destinationLabel: string;
+  role: "client" | "staff" | "management" | null;
 };
 
 export default function Navbar({ auth }: { auth: AuthInfo }) {
   const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
+  const isStaffOrManagement = auth.role === "staff" || auth.role === "management";
 
   async function handleSignOut() {
     const supabase = createClient();
@@ -57,14 +60,43 @@ export default function Navbar({ auth }: { auth: AuthInfo }) {
 
         <div className="hidden items-center gap-4 md:flex">
           {auth.signedIn ? (
-            <>
-              <Link href={auth.destination} className="text-sm text-white/80 hover:text-gold">
-                {auth.destinationLabel}
-              </Link>
-              <button onClick={handleSignOut} className="text-sm text-white/60 hover:text-gold">
-                Sign Out
-              </button>
-            </>
+            isStaffOrManagement ? (
+              <div
+                className="relative"
+                onMouseEnter={() => setMenuOpen(true)}
+                onMouseLeave={() => setMenuOpen(false)}
+              >
+                <button className="flex items-center gap-1 text-sm text-white/80 hover:text-gold">
+                  {auth.destinationLabel}
+                  <ChevronDown className="h-3.5 w-3.5" />
+                </button>
+                {menuOpen && (
+                  <div className="absolute right-0 top-full w-48 rounded-md border border-black/10 bg-white py-2 text-navy shadow-lg">
+                    <Link href="/admin" className="block px-4 py-2 text-sm hover:bg-navy-light hover:text-gold">
+                      Admin Dashboard
+                    </Link>
+                    <Link href="/settings" className="block px-4 py-2 text-sm hover:bg-navy-light hover:text-gold">
+                      Account Settings
+                    </Link>
+                    <button
+                      onClick={handleSignOut}
+                      className="block w-full px-4 py-2 text-left text-sm hover:bg-navy-light hover:text-gold"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <Link href={auth.destination} className="text-sm text-white/80 hover:text-gold">
+                  {auth.destinationLabel}
+                </Link>
+                <button onClick={handleSignOut} className="text-sm text-white/60 hover:text-gold">
+                  Sign Out
+                </button>
+              </>
+            )
           ) : (
             <Link href="/sign-in" className="text-sm text-white/80 hover:text-gold">
               Client Sign In
@@ -106,6 +138,11 @@ export default function Navbar({ auth }: { auth: AuthInfo }) {
                 <Link href={auth.destination} onClick={() => setOpen(false)} className="text-white/80 hover:text-gold">
                   {auth.destinationLabel}
                 </Link>
+                {isStaffOrManagement && (
+                  <Link href="/settings" onClick={() => setOpen(false)} className="text-white/80 hover:text-gold">
+                    Account Settings
+                  </Link>
+                )}
                 <button onClick={handleSignOut} className="text-left text-white/60 hover:text-gold">
                   Sign Out
                 </button>

@@ -80,7 +80,7 @@ export default async function About() {
         {values.map((v, i) => (
           <Reveal key={v.label} delay={i * 0.08}>
             <div className="flex flex-col items-center gap-2 text-center">
-              <v.icon className="h-8 w-8 text-gold" />
+              <v.icon className="h-8 w-8 text-forest-light" />
               <p className="text-sm text-cream/70">{v.label}</p>
             </div>
           </Reveal>
