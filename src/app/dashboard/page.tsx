@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { FolderKanban, FileText, MessageSquare, MapPin, ArrowRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import SignOutButton from "./SignOutButton";
+import DocumentList from "./components/DocumentList";
 
 export default async function Dashboard() {
   const supabase = await createClient();
@@ -21,10 +22,19 @@ export default async function Dashboard() {
   ]);
 
   const projects = myProjects ?? [];
+  const projectIds = projects.map((p) => p.id);
+
+  const { data: documents } = projectIds.length
+    ? await supabase
+        .from("project_documents")
+        .select("id, name, created_at")
+        .in("project_id", projectIds)
+        .order("created_at", { ascending: false })
+    : { data: [] as { id: string; name: string; created_at: string }[] };
 
   const stats = [
     { label: "Active Projects", value: projects.length, icon: FolderKanban },
-    { label: "Documents", value: 0, icon: FileText },
+    { label: "Documents", value: documents?.length ?? 0, icon: FileText },
     { label: "Messages", value: 0, icon: MessageSquare },
   ];
 
@@ -108,10 +118,14 @@ export default async function Dashboard() {
                 </Link>
               ))}
             </div>
+            <div className="mt-10">
+              <h2 className="mb-4 text-lg font-medium">Documents</h2>
+              <DocumentList documents={documents ?? []} />
+            </div>
+
             <p className="mt-6 text-sm text-cream/50">
-              Document uploads and project messaging are coming in a future
-              update — for now, reach out to your KAFA Group contact directly
-              for documents or questions.
+              Project messaging is coming in a future update — for now, reach
+              out to your KAFA Group contact directly with questions.
             </p>
           </div>
         ) : (

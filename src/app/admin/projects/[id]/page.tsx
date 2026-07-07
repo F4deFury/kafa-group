@@ -2,7 +2,8 @@ import Link from "next/link";
 import { ArrowLeft, Trash2 } from "lucide-react";
 import { requirePermission } from "@/lib/admin-guard";
 import UploadPhotoForm from "./UploadPhotoForm";
-import { deleteProjectImage } from "./actions";
+import UploadDocumentForm from "./UploadDocumentForm";
+import { deleteProjectImage, deleteProjectDocument } from "./actions";
 
 export default async function AdminProjectPhotos({
   params,
@@ -23,6 +24,12 @@ export default async function AdminProjectPhotos({
     .select("id, url")
     .eq("project_id", id)
     .order("sort_order", { ascending: true });
+
+  const { data: documents } = await supabase
+    .from("project_documents")
+    .select("id, name, storage_path, created_at")
+    .eq("project_id", id)
+    .order("created_at", { ascending: false });
 
   return (
     <div>
@@ -51,6 +58,33 @@ export default async function AdminProjectPhotos({
             </form>
           </div>
         ))}
+      </div>
+
+      <div className="section-divider my-8" />
+
+      <h2 className="mb-1 text-lg font-medium">Documents</h2>
+      <p className="mb-4 text-sm text-cream/60">
+        Visible only to staff/management and this project&rsquo;s assigned
+        client, from their dashboard.
+      </p>
+      <UploadDocumentForm projectId={id} />
+      <div className="mt-4 space-y-2">
+        {(documents ?? []).map((doc) => (
+          <div key={doc.id} className="flex items-center justify-between rounded-md border border-black/10 bg-navy-card p-3">
+            <p className="text-sm">{doc.name}</p>
+            <form action={deleteProjectDocument}>
+              <input type="hidden" name="document_id" value={doc.id} />
+              <input type="hidden" name="project_id" value={id} />
+              <input type="hidden" name="storage_path" value={doc.storage_path} />
+              <button type="submit" className="rounded-sm border border-red-500/40 px-2 py-1 text-xs text-red-600 hover:bg-red-50">
+                Remove
+              </button>
+            </form>
+          </div>
+        ))}
+        {(documents ?? []).length === 0 && (
+          <p className="text-sm text-cream/50">No documents uploaded yet.</p>
+        )}
       </div>
     </div>
   );
