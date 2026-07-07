@@ -69,7 +69,7 @@ export default async function Projects() {
   return (
     <div>
       <PageHero image={heroImage} eyebrow="Building Excellence" title="KAFA Group’s Featured Projects" />
-      <div className="mx-auto max-w-6xl px-6 py-20">
+      <div className="relative z-10 -mt-24 mx-auto max-w-6xl rounded-t-3xl bg-white/70 px-6 pb-20 pt-16 backdrop-blur-sm">
       <Reveal>
         <p className="max-w-2xl text-cream/70">
           With a track record of excellence and a commitment to community
