@@ -47,7 +47,19 @@ export default async function AdminLayout({
   ].filter((i) => i.show);
 
   return (
-    <div className="mx-auto flex max-w-7xl gap-8 px-6 py-12">
+    <div>
+      <div className="border-b border-forest-light/30 bg-[#0b1520] px-6 py-3">
+        <div className="mx-auto flex max-w-7xl items-center justify-between">
+          <div className="flex items-center gap-3 font-mono text-xs tracking-widest text-white/70">
+            <span className="flex h-2 w-2 rounded-full bg-forest-light shadow-[0_0_6px_2px_rgba(46,107,80,0.6)]" />
+            KAFA GROUP &middot; CONTROL PANEL
+          </div>
+          <div className="font-mono text-xs tracking-wide text-gold-light">
+            {isManagement ? "MANAGEMENT ACCESS" : "STAFF ACCESS"}
+          </div>
+        </div>
+      </div>
+      <div className="mx-auto flex max-w-7xl gap-8 px-6 py-12">
       <aside className="w-56 shrink-0">
         <p className="mb-1 text-xs uppercase tracking-[0.2em] text-gold">
           {isManagement ? "Management" : "Staff"}
@@ -67,6 +79,7 @@ export default async function AdminLayout({
         </nav>
       </aside>
       <div className="min-w-0 flex-1">{children}</div>
+      </div>
     </div>
   );
 }

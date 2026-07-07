@@ -67,7 +67,7 @@ export default async function Home() {
   return (
     <div>
       {/* Hero with background video */}
-      <section className="relative flex min-h-[90vh] items-center overflow-hidden">
+      <section className="relative -mt-20 flex min-h-screen items-center overflow-hidden">
         <HeroRotator slides={slides} />
         <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/80 to-navy/50" />
         <div className="relative mx-auto max-w-7xl px-6 py-24">
