@@ -11,6 +11,7 @@ import {
 import { ChevronDown } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import HeroRotator from "@/components/HeroRotator";
+import GlobeHero from "@/components/globe/GlobeHero";
 import { createClient } from "@/lib/supabase/server";
 
 const stats = [
@@ -66,6 +67,8 @@ export default async function Home() {
   const featuredProjects = projects && projects.length > 0 ? projects : fallbackProjects;
 
   return (
+    <>
+    <GlobeHero />
     <div>
       {/* Hero with background video */}
       <section className="relative -mt-20 flex min-h-screen items-center overflow-hidden">
@@ -197,5 +200,6 @@ export default async function Home() {
         </Reveal>
       </section>
     </div>
+    </>
   );
 }
